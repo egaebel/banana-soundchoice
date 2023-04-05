@@ -1,3 +1,4 @@
 potassium
+speechbrain
 torch
 transformers

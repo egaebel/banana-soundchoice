@@ -1,11 +1,15 @@
-# This file runs during container build time to get model weights built into the container
+import torch
 
-# In this example: A Huggingface BERT model
-from transformers import pipeline
 
 def download_model():
-    # do a dry run of loading the huggingface model, which will download weights
-    pipeline('fill-mask', model='bert-base-uncased')
+    device = 0 if torch.cuda.is_available() else -1
+    from speechbrain.pretrained import GraphemeToPhoneme
+
+    model = GraphemeToPhoneme.from_hparams(
+        "speechbrain/soundchoice-g2p", run_opts={"device": device}
+    )
+    model("Priming the model to download weights, etc.")
+
 
 if __name__ == "__main__":
     download_model()
