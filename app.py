@@ -16,7 +16,7 @@ def init():
     from speechbrain.pretrained import GraphemeToPhoneme
 
     g2p = GraphemeToPhoneme.from_hparams(
-        "speechbrain/soundchoice-g2p", run_opts={"device": device}
+        "speechbrain/soundchoice-g2p", run_opts={"device": f"cuda:{device}"}
     )
     context = {
         "device": device,
