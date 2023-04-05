@@ -18,7 +18,12 @@ def init():
     g2p = GraphemeToPhoneme.from_hparams(
         "speechbrain/soundchoice-g2p", run_opts={"device": device}
     )
-    context = {"g2p": g2p, "model": g2p.mods.model, "soundchoice_batch_size": 32}
+    context = {
+        "device": device,
+        "g2p": g2p,
+        "model": g2p.mods.model,
+        "soundchoice_batch_size": 8,
+    }
 
     return context
 
@@ -65,13 +70,15 @@ def g2p_wrapper_after(g2p, model_outputs):
 def handler(context: dict, request: Request) -> Response:
     text_list = request.json.get("text_list")
 
+    device = context.get("device")
     g2p = context.get("g2p")
     model = context.get("model")
     soundchoice_batch_size: int = context.get("soundchoice_batch_size")
 
     text_list_str: str = str(text_list)[:100]
     print(
-        f"Running soundchoice on text_list with: '{len(text_list)}' "
+        f"Running soundchoice on device: '{str(device)}' "
+        f"on text_list with: '{len(text_list)}' "
         f"items with batch size: '{soundchoice_batch_size}' "
         f"and text_list_str: '{text_list_str}'....."
     )
@@ -84,7 +91,8 @@ def handler(context: dict, request: Request) -> Response:
         )
     )
     print(
-        f"Finished running soundchoice on text_list with: '{len(text_list)}' "
+        f"Finished running soundchoice  on device: '{str(device)}' "
+        f"on text_list with: '{len(text_list)}' "
         f"items with batch size: '{soundchoice_batch_size}' "
         f"and text_list_str: '{text_list_str}'!"
     )
