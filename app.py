@@ -1,5 +1,8 @@
 from potassium import Potassium, Request, Response
+from typing import List
 
+import itertools
+import more_itertools
 import torch
 
 app = Potassium("my_app")
@@ -14,7 +17,7 @@ def init():
     model = GraphemeToPhoneme.from_hparams(
         "speechbrain/soundchoice-g2p", run_opts={"device": device}
     )
-    context = {"model": model}
+    context = {"model": model, "soundchoice_batch_size": 32}
 
     return context
 
@@ -24,9 +27,18 @@ def init():
 def handler(context: dict, request: Request) -> Response:
     text_list = request.json.get("text_list")
     model = context.get("model")
-    outputs = model(text_list)
+    soundchoice_batch_size = context.get("soundchoice_batch_size")
 
-    return Response(json={"outputs": outputs}, status=200)
+    phoneme_list: List[List[str]] = list(
+        itertools.chain.from_iterable(
+            model(text_list_chunk)
+            for text_list_chunk in more_itertools.chunked(
+                text_list, soundchoice_batch_size
+            )
+        )
+    )
+
+    return Response(json={"outputs": phoneme_list}, status=200)
 
 
 if __name__ == "__main__":
