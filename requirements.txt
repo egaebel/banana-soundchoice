@@ -2,4 +2,5 @@ more_itertools
 potassium
 speechbrain
 torch
+tqdm
 transformers

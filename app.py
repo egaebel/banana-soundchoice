@@ -1,4 +1,5 @@
 from potassium import Potassium, Request, Response
+from tqdm import tqdm
 from typing import List
 
 import itertools
@@ -66,15 +67,26 @@ def handler(context: dict, request: Request) -> Response:
 
     g2p = context.get("g2p")
     model = context.get("model")
-    soundchoice_batch_size = context.get("soundchoice_batch_size")
+    soundchoice_batch_size: int = context.get("soundchoice_batch_size")
 
+    text_list_str: str = str(text_list)[:100]
+    print(
+        f"Running soundchoice on text_list with: '{len(text_list)}' "
+        f"items with batch size: '{soundchoice_batch_size}' "
+        f"and text_list_str: '{text_list_str}'....."
+    )
     phoneme_list: List[List[str]] = list(
         itertools.chain.from_iterable(
             g2p_wrapper_after(g2p, model(**g2p_wrapper_before(g2p, text_list_chunk)))
-            for text_list_chunk in more_itertools.chunked(
-                text_list, soundchoice_batch_size
+            for text_list_chunk in tqdm(
+                list(more_itertools.chunked(text_list, soundchoice_batch_size))
             )
         )
+    )
+    print(
+        f"Finished running soundchoice on text_list with: '{len(text_list)}' "
+        f"items with batch size: '{soundchoice_batch_size}' "
+        f"and text_list_str: '{text_list_str}'!"
     )
 
     return Response(json={"outputs": phoneme_list}, status=200)
