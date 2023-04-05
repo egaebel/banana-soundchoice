@@ -2,3 +2,4 @@ more_itertools
 potassium
 speechbrain
 torch
+transformers
