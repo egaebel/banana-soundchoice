@@ -21,7 +21,7 @@ def init():
     context = {
         "device": device,
         "model": model,
-        "soundchoice_batch_size": 8,
+        "soundchoice_batch_size": 32,
     }
 
     return context

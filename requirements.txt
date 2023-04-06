@@ -4,3 +4,4 @@ speechbrain
 torch
 tqdm
 transformers
+websockets==10.0
