@@ -6,7 +6,7 @@ import itertools
 import more_itertools
 import torch
 
-app = Potassium("my_app")
+app = Potassium("soundchoice-g2p")
 
 
 # @app.init runs at startup, and loads models into the app's context
