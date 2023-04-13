@@ -19,7 +19,6 @@ def init():
         "speechbrain/soundchoice-g2p", run_opts={"device": device}
     )
     context = {
-        "device": device,
         "model": model,
         "soundchoice_batch_size": 32,
     }
@@ -32,9 +31,10 @@ def init():
 def handler(context: dict, request: Request) -> Response:
     text_list = request.json.get("text_list")
 
-    device = context.get("device")
     model = context.get("model")
     soundchoice_batch_size: int = context.get("soundchoice_batch_size")
+
+    device = "cuda:0" if torch.cuda.is_available() else -1
 
     text_list_str: str = str(text_list)[:100]
     print(
