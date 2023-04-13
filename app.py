@@ -12,11 +12,11 @@ app = Potassium("soundchoice-g2p")
 # @app.init runs at startup, and loads models into the app's context
 @app.init
 def init():
-    device = 0 if torch.cuda.is_available() else -1
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
     from speechbrain.pretrained import GraphemeToPhoneme
 
     model = GraphemeToPhoneme.from_hparams(
-        "speechbrain/soundchoice-g2p", run_opts={"device": f"cuda:{device}"}
+        "speechbrain/soundchoice-g2p", run_opts={"device": device}
     )
     context = {
         "device": device,
