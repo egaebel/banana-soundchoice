@@ -13,6 +13,7 @@ app = Potassium("soundchoice-g2p")
 @app.init
 def init():
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    print(f"Init with device: '{device}'", flush=True)
     from speechbrain.pretrained import GraphemeToPhoneme
 
     model = GraphemeToPhoneme.from_hparams(
@@ -34,7 +35,7 @@ def handler(context: dict, request: Request) -> Response:
     model = context.get("model")
     soundchoice_batch_size: int = context.get("soundchoice_batch_size")
 
-    device = "cuda:0" if torch.cuda.is_available() else -1
+    device = "cuda:0"
 
     text_list_str: str = str(text_list)[:100]
     print(
