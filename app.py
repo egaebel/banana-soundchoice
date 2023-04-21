@@ -37,6 +37,7 @@ def init():
 # @app.handler runs for every call
 @app.handler()
 def handler(context: dict, request: Request) -> Response:
+    inference_start_time = int(time.time())
     text_list = request.json.get("text_list")
 
     model = context.get("model")
@@ -60,9 +61,11 @@ def handler(context: dict, request: Request) -> Response:
             )
         )
     )
+    inference_end_time = int(time.time())
     print(
-        f"Finished running soundchoice  on device: '{str(device)}' "
-        f"on text_list with: '{len(text_list)}' "
+        f"Finished running soundchoice on device: '{str(device)}' "
+        f"in '{inference_end_time - inference_start_time}' seconds!\n"
+        f"Ran on text_list with: '{len(text_list)}' "
         f"items with batch size: '{soundchoice_batch_size}' "
         f"and text_list_str: '{text_list_str}'!"
     )
