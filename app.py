@@ -43,6 +43,7 @@ def handler(context: dict, request: Request) -> Response:
     soundchoice_batch_size: int = context.get("soundchoice_batch_size")
 
     device = "cuda:0"
+    model = model.to(device)
 
     text_list_str: str = str(text_list)[:100]
     print(
